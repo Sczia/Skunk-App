@@ -1,5 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   KeyboardAvoidingView,
   StyleSheet,
@@ -9,112 +9,105 @@ import {
   View,
   Image,
   ImageBackground,
+  Alert,
 } from "react-native";
-import { auth } from "../firebase";
+import axios from "axios";
 
 const LoginScreen = () => {
+  const navigation = useNavigation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigation = useNavigation();
-
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        navigation.replace("Home");
+  const handleLogin = async () => {
+    try {
+      const response = await axios.post("https://6d26-136-158-65-232.ngrok-free.app/api/login", {
+        email,
+        password,
+      });
+      const { user } = response.data;
+      const { cars } = response.cars;
+  
+      // Perform actions after successful login, such as storing user data
+      // Assuming you have a function to store user data, replace `storeUserData` with the appropriate implementation
+      storeUserData(user);
+  
+      // Redirect to the "Home" screen
+      navigation.replace("Home", { user , cars});
+    } catch (error) {
+      // Handle error responses
+      console.log(error);
+      if (error.response && error.response.status === 401) {
+        Alert.alert("Invalid credentials");
+      } else {
+        Alert.alert("An error occurred");
       }
-    });
-
-    return unsubscribe;
-  }, []);
+    }
+  };
+  
+  const storeUserData = (user) => {
+    // Store the user data using your preferred method (e.g., AsyncStorage, Redux store)
+    // Replace this placeholder implementation with your actual code
+    console.log("Storing user data:", user);
+  };
 
   const goToRegister = () => {
     navigation.replace("Landing");
   };
-  const goToHome = () => {
-    navigation.replace("Home");
-  };
-
-  const handleSignUp = () => {
-    auth
-      .createUserWithEmailAndPassword(email, password)
-      .then((userCredentials) => {
-        const user = userCredentials.user;
-        console.log("Registered with:", user.email);
-      })
-      .catch((error) => alert(error.message));
-  };
-
-  const handleLogin = () => {
-    console.log(email);
-    auth
-      .signInWithEmailAndPassword(email, password)
-      .then((userCredentials) => {
-        const user = userCredentials.user;
-        console.log("Logged in with:", user.email);
-      })
-      .catch((error) => alert(error.message));
-  };
 
   return (
-      <ImageBackground
-        source={require("../assets/crop4.jpg")} // Replace with the path to your image file
-        style={styles.image}>
-
-<KeyboardAvoidingView style={styles.container} behavior="padding">
-      <View style={styles.inputContainer}>
-      
-        <View style={styles.imgContainer}>
-          <Image style={styles.logo} source={require("../assets/logo1.png")} />
-        </View>
-        <Text
-          style={{
-            fontSize: 30,
-            textAlign: "center",
-            marginBottom: 30,
-            fontWeight: "bold",
-          }}
-        >
-          Skunk Auto Salon
-        </Text>
-        <TextInput
-          placeholder="Email"
-          placeholderTextColor={"black"}
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-          style={styles.input}
-        />
-        <TextInput
-          placeholder="Password"
-          placeholderTextColor={"black"}
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-          style={styles.input}
-          secureTextEntry
-        />
- 
-      </View>
-
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={goToHome} style={styles.button}>
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={goToRegister}
-          style={[styles.button, styles.buttonOutline]}
+    <ImageBackground
+      source={require("../assets/crop4.jpg")} // Replace with the path to your image file
+      style={styles.image}
+    >
+      <KeyboardAvoidingView style={styles.container} behavior="padding">
+        <View style={styles.inputContainer}>
+          <View style={styles.imgContainer}>
+            <Image
+              style={styles.logo}
+              source={require("../assets/logo1.png")}
+            />
+          </View>
+          <Text
+            style={{
+              fontSize: 30,
+              textAlign: "center",
+              marginBottom: 30,
+              fontWeight: "bold",
+            }}
           >
-          <Text style={styles.buttonOutlineText}>Sign Up</Text>
-        </TouchableOpacity>
-      </View>
-     
-    </KeyboardAvoidingView>
+            Skunk Auto Salon
+          </Text>
+          <TextInput
+            placeholder="Email"
+            placeholderTextColor={"black"}
+            value={email}
+            onChangeText={setEmail}
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Password"
+            placeholderTextColor={"black"}
+            value={password}
+            onChangeText={setPassword}
+            style={styles.input}
+            secureTextEntry
+          />
+        </View>
 
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity onPress={handleLogin} style={styles.button}>
+            <Text style={styles.buttonText}>Login</Text>
+          </TouchableOpacity>
 
-       
-
-      
-      </ImageBackground>
+          <TouchableOpacity
+            onPress={goToRegister}
+            style={[styles.button, styles.buttonOutline]}
+          >
+            <Text style={styles.buttonOutlineText}>Sign Up</Text>
+          </TouchableOpacity>
+        </View>
+      </KeyboardAvoidingView>
+    </ImageBackground>
   );
 };
 
@@ -126,7 +119,6 @@ const styles = StyleSheet.create({
 
     justifyContent: "center",
     alignItems: "center",
-  
   },
   inputContainer: {
     width: "90%",
@@ -160,7 +152,6 @@ const styles = StyleSheet.create({
     borderColor: "#dca332",
     borderWidth: 2,
     borderStyle: "solid",
-    
   },
   buttonText: {
     color: "black",
