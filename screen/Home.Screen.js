@@ -7,11 +7,11 @@ const HomeScreen = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { user } = route.params;
-  const { cars } = route.params;
+  const { points } = route.params;
   const handleLogout = async () => {
       try {
         // Send a request to the logout endpoint of your Laravel API
-        const response = await axios.post(`https://6d26-136-158-65-232.ngrok-free.app/api/logout/${user.id}`);
+        const response = await axios.post(`https://983d-136-158-65-29.ngrok-free.app/api/logout/${user.id}`);
         console.log(response);
         // Perform any additional logout actions here (e.g., clearing user data, resetting app state)
   
@@ -42,40 +42,9 @@ const HomeScreen = () => {
         {user.name}
       </Text>
 
-      <Text
-        style={{
-          fontSize: 15,
-          textAlign: "left",
-
-          fontWeight: "400",
-          marginRight: 340,
-          color: "white",
-        }}
-      >
-        Vehicle:
-      </Text>
-      <Text
-        style={{
-          fontSize: 15,
-          textAlign: "left",
-          fontWeight: "400",
-          marginRight: 290,
-          color: "white",
-        }}
-      >
-        Driver License:
-      </Text>
-      <Text
-        style={{
-          fontSize: 15,
-          textAlign: "left",
-          fontWeight: "400",
-          marginRight: 290,
-          color: "white",
-        }}
-      >
-        Plate number:
-      </Text>
+    
+    
+    
       <Text
         style={{
           fontSize: 20,
@@ -102,19 +71,9 @@ const HomeScreen = () => {
           marginTop: 10,
         }}
       >
-        Points Earned:
+        Points Earned: {points}
       </Text>
-      <Text
-        style={{
-          fontSize: 15,
-          textAlign: "left",
-          fontWeight: "400",
-          marginRight: 290,
-          color: "white",
-        }}
-      >
-        Points Redeemed:
-      </Text>
+    
 
       <TouchableOpacity onPress={handleLogout} style={styles.button}>
         <Text style={styles.buttonText}>Sign out</Text>

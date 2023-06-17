@@ -14,6 +14,7 @@ import { ScrollView } from "react-native-gesture-handler";
 import axios from 'axios';
 
 const RegistrationScreen = () => {
+  const navigation = useNavigation(); // Add this line to get the navigation object
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [company, setCompany] = useState("");
@@ -39,7 +40,7 @@ const RegistrationScreen = () => {
     };
 
     axios
-      .post("https://6d26-136-158-65-232.ngrok-free.app/api/register", userData)
+      .post("https://983d-136-158-65-29.ngrok-free.app/api/register", userData)
       .then((response) => {
         Alert.alert(response.data.message);
         // Optionally, you can navigate to a different screen upon successful registration

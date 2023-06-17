@@ -20,19 +20,22 @@ const LoginScreen = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post("https://6d26-136-158-65-232.ngrok-free.app/api/login", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "https://983d-136-158-65-29.ngrok-free.app/api/login",
+        {
+          email,
+          password,
+        }
+      );
       const { user } = response.data;
-      const { cars } = response.cars;
-  
+      const { points } = response.data;
+
       // Perform actions after successful login, such as storing user data
       // Assuming you have a function to store user data, replace `storeUserData` with the appropriate implementation
-      storeUserData(user);
-  
+      storeUserData(user, points);
+
       // Redirect to the "Home" screen
-      navigation.replace("Home", { user , cars});
+      navigation.replace("Home", { user, points });
     } catch (error) {
       // Handle error responses
       console.log(error);
@@ -43,11 +46,11 @@ const LoginScreen = () => {
       }
     }
   };
-  
-  const storeUserData = (user) => {
+
+  const storeUserData = (user, points) => {
     // Store the user data using your preferred method (e.g., AsyncStorage, Redux store)
     // Replace this placeholder implementation with your actual code
-    console.log("Storing user data:", user);
+    console.log("Storing user data:", user, points);
   };
 
   const goToRegister = () => {
